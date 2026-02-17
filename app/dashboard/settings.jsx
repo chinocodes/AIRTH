@@ -6,28 +6,53 @@ import {
   Switch,
   ScrollView,
   Pressable,
+  Alert,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useRouter } from "expo-router";
 
 export default function Settings() {
   const [darkMode, setDarkMode] = useState(false);
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    Alert.alert(
+      "Log Out",
+      "Are you sure you want to log out?",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Log Out",
+          style: "destructive",
+          onPress: async () => {
+            // kill sesh
+            await AsyncStorage.removeItem("token");
+            await AsyncStorage.removeItem("user");
+
+            // reset nav stack
+            router.replace("/");
+          },
+        },
+      ]
+    );
+  };
 
   return (
     <ScrollView
-  style={styles.container}
-  contentContainerStyle={styles.content}
-  showsVerticalScrollIndicator={false}
->
-
+      style={styles.container}
+      contentContainerStyle={styles.content}
+      showsVerticalScrollIndicator={false}
+    >
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.title}>Settings</Text>
         <Text style={styles.subtitle}>Customize your experience</Text>
       </View>
 
-      {/* Appearance */}
+      {/* Preferences */}
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>Appearance</Text>
+        <Text style={styles.cardTitle}>Preferences</Text>
 
         <View style={styles.settingRow}>
           <View style={styles.settingLeft}>
@@ -42,15 +67,6 @@ export default function Settings() {
             thumbColor="#FFFFFF"
           />
         </View>
-      </View>
-
-      {/* Preferences */}
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>Preferences</Text>
-
-        <SettingItem icon="notifications-outline" label="Notifications" />
-        <SettingItem icon="location-outline" label="Location Access" />
-        <SettingItem icon="leaf-outline" label="Air Quality Tips" />
       </View>
 
       {/* About */}
@@ -68,7 +84,7 @@ export default function Settings() {
       </View>
 
       {/* Logout */}
-      <Pressable style={styles.logoutButton}>
+      <Pressable style={styles.logoutButton} onPress={handleLogout}>
         <Ionicons name="log-out-outline" size={20} color="#E74C3C" />
         <Text style={styles.logoutText}>Log Out</Text>
       </Pressable>
@@ -94,27 +110,23 @@ const styles = StyleSheet.create({
     backgroundColor: "#F6F8FA",
   },
   content: {
-    paddingBottom: 120, // 👈 space for bottom tab bar
+    paddingBottom: 120,
   },
-
   header: {
     paddingTop: 60,
     paddingHorizontal: 24,
     marginBottom: 30,
   },
-
   title: {
     fontSize: 32,
     fontWeight: "800",
     color: "#111",
   },
-
   subtitle: {
     fontSize: 16,
     color: "#666",
     marginTop: 6,
   },
-
   card: {
     backgroundColor: "#FFFFFF",
     borderRadius: 22,
@@ -126,44 +138,37 @@ const styles = StyleSheet.create({
     shadowRadius: 12,
     shadowOffset: { width: 0, height: 6 },
   },
-
   cardTitle: {
     fontSize: 18,
     fontWeight: "700",
     marginBottom: 14,
     color: "#111",
   },
-
   settingRow: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     paddingVertical: 14,
   },
-
   settingLeft: {
     flexDirection: "row",
     alignItems: "center",
     gap: 14,
   },
-
   settingText: {
     fontSize: 16,
     fontWeight: "500",
     color: "#222",
   },
-
   versionRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     marginTop: 10,
   },
-
   versionText: {
     fontSize: 14,
     color: "#888",
   },
-
   logoutButton: {
     marginTop: 10,
     marginBottom: 50,
@@ -179,7 +184,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.06,
     shadowRadius: 12,
   },
-
   logoutText: {
     fontSize: 16,
     fontWeight: "700",

@@ -29,7 +29,7 @@ export default function DashboardLayout() {
         }}
       />
 
-      {/* Travel (Eco-Friendly Travel Page) */}
+      {/* travell page */}
       <Tabs.Screen
         name="travel"
         options={{

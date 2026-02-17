@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  TouchableOpacity,
+  Image,
+  Alert
+} from 'react-native';
 import { Link, useRouter } from 'expo-router';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -11,40 +19,41 @@ const Login = () => {
   const router = useRouter();
 
   const handleLogin = async () => {
-  if (!email || !password) {
-    Alert.alert('Error', 'Please fill in all fields');
-    return;
-  }
-
-  setLoading(true);
-
-  try {
-    const response = await fetch("http://10.178.75.95:8000/api/login", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ email, password }),
-});
-
-
-    const data = await response.json();
-
-    if (response.ok) {
-      // Alert.alert('Success', `Welcome ${data.name}!`);
-      // todo: make it go the the home screen
-      await AsyncStorage.setItem("user", JSON.stringify(data.user));
-      router.push("/dashboard/home");
-      
-
-    } else {
-      Alert.alert('Error', data.detail || 'Invalid credentials');
+    if (!email || !password) {
+      Alert.alert('Error', 'Please fill in all fields');
+      return;
     }
-  } catch (err) {
-    Alert.alert('Error', 'Unable to connect to server');
-  } finally {
-    setLoading(false);
-  }
-};
 
+    setLoading(true);
+
+    try {
+      const response = await fetch("http://10.178.75.95:8000/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.detail || "Invalid credentials");
+      }
+
+      // store jwt token
+      await AsyncStorage.setItem("token", data.access_token);
+
+      
+      await AsyncStorage.setItem("user", JSON.stringify(data.user));
+
+      // Navigate to dashboard
+      router.replace("/dashboard/home");
+
+    } catch (err) {
+      Alert.alert('Error', err.message || 'Unable to connect to server');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -53,7 +62,9 @@ const Login = () => {
       </View>
 
       <Text style={styles.title}>Login</Text>
-      <Text style={styles.subtitle}>Enter your email and password{'\n'}to login</Text>
+      <Text style={styles.subtitle}>
+        Enter your email and password{"\n"}to login
+      </Text>
 
       <TextInput
         placeholder="Email"
@@ -84,7 +95,9 @@ const Login = () => {
         onPress={handleLogin}
         disabled={loading}
       >
-        <Text style={styles.loginButtonText}>{loading ? 'Logging in...' : 'Login'}</Text>
+        <Text style={styles.loginButtonText}>
+          {loading ? 'Logging in...' : 'Login'}
+        </Text>
       </TouchableOpacity>
 
       <Text style={styles.orText}>Or login with</Text>
@@ -99,7 +112,10 @@ const Login = () => {
       </View>
 
       <Text style={styles.registerText}>
-        Don't have an account? <Link href="register" style={styles.boldText}>Register</Link>
+        Don't have an account?{" "}
+        <Link href="register" style={styles.boldText}>
+          Register
+        </Link>
       </Text>
 
       <Text style={styles.helpText}>
@@ -114,21 +130,87 @@ export default Login;
 const GREEN = '#0a5c0a';
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: 'white', paddingHorizontal: 30, paddingTop: 60 },
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+    paddingHorizontal: 30,
+    paddingTop: 60
+  },
   logoContainer: { alignItems: 'center', marginBottom: 30 },
   logo: { width: 80, height: 80, marginBottom: 5 },
-  title: { fontSize: 32, fontWeight: '700', color: GREEN, textAlign: 'center', marginTop: 20 },
-  subtitle: { textAlign: 'center', color: GREEN, marginVertical: 20, fontWeight: '600' },
-  input: { borderWidth: 1, borderColor: GREEN, borderRadius: 10, padding: 12, fontSize: 16 },
-  helperText: { color: GREEN, textAlign: 'right', marginTop: 5, fontSize: 13, fontWeight: '500' },
-  loginButton: { backgroundColor: GREEN, paddingVertical: 14, borderRadius: 10, marginTop: 10 },
-  loginButtonText: { color: 'white', textAlign: 'center', fontSize: 18, fontWeight: '700' },
-  orText: { textAlign: 'center', marginVertical: 20, color: GREEN },
-  socialRow: { flexDirection: 'row', justifyContent: 'center', gap: 10, marginBottom: 20 },
-  googleBtn: { borderWidth: 1, borderColor: GREEN, paddingVertical: 12, paddingHorizontal: 20, borderRadius: 10 },
-  facebookBtn: { backgroundColor: GREEN, paddingVertical: 12, paddingHorizontal: 20, borderRadius: 10 },
+  title: {
+    fontSize: 32,
+    fontWeight: '700',
+    color: GREEN,
+    textAlign: 'center',
+    marginTop: 20
+  },
+  subtitle: {
+    textAlign: 'center',
+    color: GREEN,
+    marginVertical: 20,
+    fontWeight: '600'
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: GREEN,
+    borderRadius: 10,
+    padding: 12,
+    fontSize: 16
+  },
+  helperText: {
+    color: GREEN,
+    textAlign: 'right',
+    marginTop: 5,
+    fontSize: 13,
+    fontWeight: '500'
+  },
+  loginButton: {
+    backgroundColor: GREEN,
+    paddingVertical: 14,
+    borderRadius: 10,
+    marginTop: 10
+  },
+  loginButtonText: {
+    color: 'white',
+    textAlign: 'center',
+    fontSize: 18,
+    fontWeight: '700'
+  },
+  orText: {
+    textAlign: 'center',
+    marginVertical: 20,
+    color: GREEN
+  },
+  socialRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 10,
+    marginBottom: 20
+  },
+  googleBtn: {
+    borderWidth: 1,
+    borderColor: GREEN,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 10
+  },
+  facebookBtn: {
+    backgroundColor: GREEN,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 10
+  },
   facebookText: { color: 'white' },
-  registerText: { textAlign: 'center', color: GREEN, marginTop: 10 },
+  registerText: {
+    textAlign: 'center',
+    color: GREEN,
+    marginTop: 10
+  },
   boldText: { fontWeight: '700' },
-  helpText: { textAlign: 'center', color: GREEN, marginTop: 30 },
+  helpText: {
+    textAlign: 'center',
+    color: GREEN,
+    marginTop: 30
+  },
 });
