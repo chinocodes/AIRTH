@@ -30,3 +30,6 @@ app.include_router(travel_router)
 app.include_router(aqi_router)
 app.include_router(goals.router)
 
+
+
+

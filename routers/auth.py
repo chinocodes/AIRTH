@@ -4,12 +4,10 @@ from pydantic import BaseModel, EmailStr
 from passlib.context import CryptContext
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
-from utils.db import cur, conn
+from utils.db import get_connection
 
 router = APIRouter()
 pwd_context = CryptContext(schemes=["sha256_crypt"])
-
-# jwt config
 
 SECRET_KEY = "CHANGE_THIS_TO_A_LONG_RANDOM_SECRET"
 ALGORITHM = "HS256"
@@ -17,7 +15,6 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
 security = HTTPBearer()
 
-#models
 class LoginModel(BaseModel):
     email: EmailStr
     password: str
@@ -27,17 +24,12 @@ class RegisterModel(BaseModel):
     email: EmailStr
     password: str
 
-# ==============================
-# JWT FUNCTIONS
-# ==============================
-
 def create_access_token(data: dict):
     to_encode = data.copy()
     expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
-
 
 def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(security)
@@ -54,26 +46,33 @@ def get_current_user(
     except JWTError:
         raise HTTPException(status_code=401, detail="Invalid token")
 
-    # Verify user still exists
+    conn = get_connection()
+    cur = conn.cursor()
+
     cur.execute("SELECT id FROM users WHERE id=%s", (user_id,))
     user = cur.fetchone()
+
+    cur.close()
+    conn.close()
 
     if not user:
         raise HTTPException(status_code=401, detail="User not found")
 
     return user_id
 
-# ==============================
-# AUTH ROUTES
-# ==============================
-
 @router.post("/api/login")
 def login(user: LoginModel):
+    conn = get_connection()
+    cur = conn.cursor()
+
     cur.execute(
         "SELECT id, name, password FROM users WHERE email=%s",
         (user.email,)
     )
     result = cur.fetchone()
+
+    cur.close()
+    conn.close()
 
     if not result:
         raise HTTPException(status_code=401, detail="Invalid credentials")
@@ -96,11 +95,15 @@ def login(user: LoginModel):
         }
     }
 
-
 @router.post("/api/register")
 def register(user: RegisterModel):
+    conn = get_connection()
+    cur = conn.cursor()
+
     cur.execute("SELECT id FROM users WHERE email=%s", (user.email,))
     if cur.fetchone():
+        cur.close()
+        conn.close()
         raise HTTPException(status_code=400, detail="User already exists")
 
     hashed_pw = pwd_context.hash(user.password)
@@ -113,6 +116,9 @@ def register(user: RegisterModel):
 
     user_id = cur.fetchone()[0]
     conn.commit()
+
+    cur.close()
+    conn.close()
 
     return {
         "message": "User registered successfully",

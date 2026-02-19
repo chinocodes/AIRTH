@@ -1,28 +1,21 @@
 from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
 from datetime import date
-from utils.db import cur, conn
+from utils.db import get_connection
 from routers.auth import get_current_user
 
 router = APIRouter()
-
-
-# models
 
 class GoalCreateModel(BaseModel):
     target_value: int
     start_date: date
     end_date: date
 
-
-# create goal
-
 @router.post("/api/goals/create")
 def create_goal(
     goal: GoalCreateModel,
     current_user=Depends(get_current_user)
 ):
-
     user_id = current_user
 
     if goal.target_value <= 0:
@@ -31,13 +24,17 @@ def create_goal(
     if goal.end_date <= goal.start_date:
         raise HTTPException(status_code=400, detail="End date must be after start date")
 
-    # prevent overlapping active goals
+    conn = get_connection()
+    cur = conn.cursor()
+
     cur.execute("""
         SELECT id FROM user_goals
         WHERE user_id = %s AND status = 'ACTIVE'
     """, (user_id,))
 
     if cur.fetchone():
+        cur.close()
+        conn.close()
         raise HTTPException(status_code=400, detail="You already have an active goal")
 
     cur.execute("""
@@ -55,6 +52,9 @@ def create_goal(
     new_goal = cur.fetchone()
     conn.commit()
 
+    cur.close()
+    conn.close()
+
     return {
         "id": new_goal[0],
         "user_id": new_goal[1],
@@ -67,13 +67,13 @@ def create_goal(
         "updated_at": new_goal[8],
     }
 
-
-# get active goals
-
 @router.get("/api/goals/active")
 def get_active_goal(current_user=Depends(get_current_user)):
 
-    user_id = current_user["id"]
+    user_id = current_user
+
+    conn = get_connection()
+    cur = conn.cursor()
 
     cur.execute("""
         SELECT id, target_value, current_value, start_date, end_date, status
@@ -82,6 +82,9 @@ def get_active_goal(current_user=Depends(get_current_user)):
     """, (user_id,))
 
     goal = cur.fetchone()
+
+    cur.close()
+    conn.close()
 
     if not goal:
         return {"goal": None}
