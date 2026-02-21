@@ -82,7 +82,11 @@ useFocusEffect (
     // console.log("GOAL DATA:", data);
 
    
-    if (!data.goal) return;
+    // if (!data.goal) return;
+    if (!data.goal) {
+      setCurrentValue(0);
+      setTargetValue(0);
+    };
 
     setCurrentValue(data.goal.current_value);
     setTargetValue(data.goal.target_value);
@@ -133,6 +137,7 @@ useFocusEffect (
       confettiRef.current?.play(0);
       setGoalComplete("Congrats");
     }
+    
   });
 
   return (
