@@ -50,25 +50,7 @@ export default function Settings() {
         <Text style={styles.subtitle}>Customize your experience</Text>
       </View>
 
-      {/* prefence section */}
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>Preferences</Text>
-
-        <View style={styles.settingRow}>
-          <View style={styles.settingLeft}>
-            <Ionicons name="moon-outline" size={22} color="#555" />
-            <Text style={styles.settingText}>Dark Mode</Text>
-          </View>
-
-          <Switch
-            value={darkMode}
-            onValueChange={setDarkMode}
-            trackColor={{ false: "#E5E5E5", true: "#2ECC71" }}
-            thumbColor="#FFFFFF"
-          />
-        </View>
-      </View>
-
+      
       {/* about */}
       <View style={styles.card}>
         <Text style={styles.cardTitle}>About</Text>
@@ -78,10 +60,11 @@ export default function Settings() {
         <SettingItem icon="document-text-outline" label="Terms of Service" />
 
         <View style={styles.versionRow}>
-          <Text style={styles.versionText}>Version</Text>
-          <Text style={styles.versionText}>1.0.0</Text>
+          
         </View>
       </View>
+      
+
 
       {/* logout */}
       <Pressable style={styles.logoutButton} onPress={handleLogout}>
