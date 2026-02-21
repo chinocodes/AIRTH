@@ -44,13 +44,13 @@ export default function Settings() {
       contentContainerStyle={styles.content}
       showsVerticalScrollIndicator={false}
     >
-      {/* Header */}
+      {/* header */}
       <View style={styles.header}>
         <Text style={styles.title}>Settings</Text>
         <Text style={styles.subtitle}>Customize your experience</Text>
       </View>
 
-      {/* Preferences */}
+      {/* prefence section */}
       <View style={styles.card}>
         <Text style={styles.cardTitle}>Preferences</Text>
 
@@ -69,7 +69,7 @@ export default function Settings() {
         </View>
       </View>
 
-      {/* About */}
+      {/* about */}
       <View style={styles.card}>
         <Text style={styles.cardTitle}>About</Text>
 
@@ -83,7 +83,7 @@ export default function Settings() {
         </View>
       </View>
 
-      {/* Logout */}
+      {/* logout */}
       <Pressable style={styles.logoutButton} onPress={handleLogout}>
         <Ionicons name="log-out-outline" size={20} color="#E74C3C" />
         <Text style={styles.logoutText}>Log Out</Text>
@@ -92,7 +92,7 @@ export default function Settings() {
   );
 }
 
-/* Reusable setting row */
+
 const SettingItem = ({ icon, label }) => (
   <Pressable style={styles.settingRow}>
     <View style={styles.settingLeft}>

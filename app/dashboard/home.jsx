@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
+import styles from "../home.styles"
 import {
   ScrollView,
   View,
@@ -10,6 +11,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Location from "expo-location";
 import * as Progress from "react-native-progress";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
+import LottieView from 'lottie-react-native';
 
 const { width } = Dimensions.get("window");
 
@@ -20,6 +22,12 @@ export default function Home() {
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
   const [region, setRegion] = useState(null);
+  const [targetValue, setTargetValue] = useState(30);
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
+  const [currentValue, setCurrentValue] = useState(0);
+  const confettiRef = useRef(null);
+  const [goalComplete, setGoalComplete] = useState(null);
 
   // Load stored user
   useEffect(() => {
@@ -27,12 +35,17 @@ export default function Home() {
       if (stored) setUser(JSON.parse(stored));
     });
   }, []);
+  useEffect(() => {
+  if (user) {
+    fetchGoal();
+  }
+}, [user]);
 
   // Backend city-temperature fetch
   const sendCity = async (city) => {
     try {
       const res = await fetch(
-        `http://10.178.72.148:8000/save-city?city=${city}`
+        `http://10.178.75.95:8000/save-city?city=${city}`
       );
       const data = await res.json();
       if (data.temp !== undefined) setTemp(data.temp);
@@ -47,7 +60,7 @@ export default function Home() {
   const fetchAqi = async (lat, lon) => {
     try {
       const res = await fetch(
-        `http://10.178.72.148:8000/aqi/current?lat=${lat}&lon=${lon}`
+        // `http://10.178.75.95:8000/aqi/current?lat=${lat}&lon=${lon}`
 
       );
       const data = await res.json();
@@ -56,8 +69,35 @@ export default function Home() {
       console.log("AQI fetch error:", err);
     }
   };
+  const fetchGoal = async () => {
+  try {
+    const token = await AsyncStorage.getItem("token");
 
-  // ---- GPS + reverse geocode + AQI fetch ----
+    const res = await fetch(`http://10.178.75.95:8000/api/goals/active`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const data = await res.json();
+    // console.log("GOAL DATA:", data);
+
+   
+    if (!data.goal) return;
+
+    setCurrentValue(data.goal.current_value);
+    setTargetValue(data.goal.target_value);
+    setStartDate(new Date(data.goal.start_date));
+    setEndDate(new Date(data.goal.end_date));
+
+  } catch (err) {
+    console.log("error message: ", err);
+  }
+};
+
+  // ---- gps + reverse geocode + AQI fetch ----
   useEffect(() => {
     (async () => {
       const { status } = await Location.requestForegroundPermissionsAsync();
@@ -81,7 +121,7 @@ export default function Home() {
       setLocation(cityName);
 
       // fetch real AQI from backend
-      fetchAqi(latitude, longitude);
+      // fetchAqi(latitude, longitude);
     })();
   }, []);
 
@@ -91,6 +131,12 @@ export default function Home() {
     if (aqi <= 100) return "#F1C40F";
     return "#E74C3C";
   };
+  useEffect (() => {
+    if (currentValue && targetValue && currentValue >= targetValue ) {
+      confettiRef.current?.play(0);
+      setGoalComplete("Congrats");
+    }
+  });
 
   return (
     <ScrollView
@@ -98,6 +144,15 @@ export default function Home() {
       contentContainerStyle={styles.content}
       showsVerticalScrollIndicator={false}
     >
+      {/* { the confetti component } */}
+      <LottieView
+        ref={confettiRef}
+        source={require('./confetti.json')}
+        autoPlay={false}
+        loop={false}
+        style={styles.lottie}
+        resizeMode='cover'
+      />
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.greeting}>
@@ -115,44 +170,35 @@ export default function Home() {
           </Text>
         </View>
 
-        <View
-          style={[
-            styles.aqiBadge,
-            { backgroundColor: getAqiColor() + "22" },
-          ]}
-        >
-          <Text style={styles.aqiLabel}>AQI</Text>
-          <Text style={[styles.aqiValue, { color: getAqiColor() }]}>
-            {aqi}
-          </Text>
-        </View>
+        
       </View>
 
-      {/* INFO PILLS */}
+      {/* info */}
       <View style={styles.pillRow}>
         <View style={styles.pill}>
-          <Text style={styles.pillTitle}>Air Quality</Text>
+          <Text style={styles.pillTitle}>Recommendations</Text>
           <Text style={styles.pillValue}>
-            {aqi <= 50 ? "Good" : aqi <= 100 ? "Moderate" : "Unhealthy"}
+            {temp <= 15 ? "Its a bit chilly outside" : temp <= 20 ? "Nice and warm today" : "Its very hot"}
           </Text>
         </View>
 
         <View style={styles.pill}>
           <Text style={styles.pillTitle}>Advice</Text>
           <Text style={styles.pillValue}>
-            {aqi <= 50 ? "Great for walking" : aqi <= 100 ? "Sensitive caution" : "Limit exposure"}
+            {temp <= 15 ? "Grab your coat" : temp <= 20 ? "Maybe grab a jacket" : "Dress lightly"}
           </Text>
         </View>
       </View>
 
-      {/* CLEAN TRIPS */}
+      {/* clean trips */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Clean Trips</Text>
 
         <View style={styles.progressCard}>
-          <Text style={styles.progressText}>29 of 30 trips clean 🌱</Text>
+          <Text style={styles.progressText}>You've completed {currentValue} of {targetValue} 🌱</Text>
+          <Text style={styles.progressText}>{goalComplete}</Text>
           <Progress.Bar
-            progress={0.95}
+            progress={currentValue/targetValue}
             width={width - 80}
             height={12}
             color="#2ECC71"
@@ -183,125 +229,3 @@ export default function Home() {
   );
 }
 
-// ---------------------------
-// STYLES
-// ---------------------------
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: "#F6F8FA",
-    flex: 1,
-  },
-  content: {
-    paddingBottom: 120,
-  },
-  header: {
-    paddingTop: 60,
-    paddingHorizontal: 24,
-    marginBottom: 20,
-  },
-  greeting: {
-    fontSize: 28,
-    fontWeight: "800",
-    color: "#111",
-  },
-  subGreeting: {
-    fontSize: 16,
-    color: "#666",
-    marginTop: 4,
-  },
-  heroCard: {
-    marginHorizontal: 20,
-    backgroundColor: "#FFFFFF",
-    borderRadius: 26,
-    padding: 24,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowRadius: 15,
-    shadowOffset: { width: 0, height: 8 },
-  },
-  city: {
-    fontSize: 18,
-    color: "#666",
-  },
-  temperature: {
-    fontSize: 56,
-    fontWeight: "800",
-    color: "#111",
-    marginTop: 6,
-  },
-  aqiBadge: {
-    width: 90,
-    height: 90,
-    borderRadius: 45,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  aqiLabel: {
-    fontSize: 12,
-    color: "#666",
-  },
-  aqiValue: {
-    fontSize: 26,
-    fontWeight: "800",
-  },
-  pillRow: {
-    flexDirection: "row",
-    gap: 12,
-    marginTop: 20,
-    paddingHorizontal: 20,
-  },
-  pill: {
-    flex: 1,
-    backgroundColor: "#FFFFFF",
-    borderRadius: 18,
-    padding: 16,
-    shadowColor: "#000",
-    shadowOpacity: 0.06,
-    shadowRadius: 10,
-  },
-  pillTitle: {
-    fontSize: 13,
-    color: "#888",
-  },
-  pillValue: {
-    fontSize: 16,
-    fontWeight: "700",
-    marginTop: 4,
-  },
-  section: {
-    marginTop: 30,
-    paddingHorizontal: 20,
-  },
-  sectionTitle: {
-    fontSize: 22,
-    fontWeight: "800",
-    marginBottom: 14,
-  },
-  progressCard: {
-    backgroundColor: "#FFFFFF",
-    borderRadius: 20,
-    padding: 20,
-    shadowColor: "#000",
-    shadowOpacity: 0.06,
-    shadowRadius: 12,
-  },
-  progressText: {
-    fontSize: 16,
-    fontWeight: "600",
-    marginBottom: 12,
-  },
-  mapWrapper: {
-    height: 220,
-    borderRadius: 22,
-    overflow: "hidden",
-    shadowColor: "#000",
-    shadowOpacity: 0.08,
-    shadowRadius: 12,
-  },
-  map: {
-    flex: 1,
-  },
-});

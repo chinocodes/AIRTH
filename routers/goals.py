@@ -19,7 +19,7 @@ def create_goal(
     user_id = current_user
 
     if goal.target_value <= 0:
-        raise HTTPException(status_code=400, detail="Target must be greater than 0")
+        raise HTTPException(status_code=400, detail="Target must be greater than 0")    # some input validation
 
     if goal.end_date <= goal.start_date:
         raise HTTPException(status_code=400, detail="End date must be after start date")

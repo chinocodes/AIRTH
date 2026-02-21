@@ -9,9 +9,9 @@ from utils.db import get_connection
 router = APIRouter()
 pwd_context = CryptContext(schemes=["sha256_crypt"])
 
-SECRET_KEY = "CHANGE_THIS_TO_A_LONG_RANDOM_SECRET"
+SECRET_KEY = "CHANGE_THIS_TO_A_LONG_RANDOM_SECRET" #change later
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60
+ACCESS_TOKEN_EXPIRE_MINUTES = 60    #jwt time before expiry
 
 security = HTTPBearer()
 

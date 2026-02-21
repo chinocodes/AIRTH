@@ -2,6 +2,7 @@ import React from "react";
 import { Tabs } from "expo-router";
 import { View, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import Octicons from '@expo/vector-icons/Octicons';
 
 export default function DashboardLayout() {
   return (
@@ -13,7 +14,7 @@ export default function DashboardLayout() {
         tabBarItemStyle: styles.tabItem,
       }}
     >
-      {/* Home */}
+      {/* home */}
       <Tabs.Screen
         name="home"
         options={{
@@ -44,8 +45,9 @@ export default function DashboardLayout() {
           ),
         }}
       />
+      
 
-      {/* Settings */}
+      {/* settings */}
       <Tabs.Screen
         name="settings"
         options={{
@@ -60,7 +62,23 @@ export default function DashboardLayout() {
           ),
         }}
       />
+      {/* goal */}
+      <Tabs.Screen
+        name="goal" // had to rename to goal as "goal_setter" was giving me warnings
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <View style={styles.iconWrapper(focused)}>
+              <Octicons
+                name={focused ? "goal" : "goal"}
+                size={24}
+                color={focused ? "#2ECC71" : "#777"}
+              />
+            </View>
+          ),
+        }}
+      />
     </Tabs>
+    
   );
 }
 

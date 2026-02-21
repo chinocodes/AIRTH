@@ -17,7 +17,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-
+ // check if all fields have been filled
   const handleLogin = async () => {
     if (!email || !password) {
       Alert.alert('Error', 'Please fill in all fields');
@@ -45,7 +45,7 @@ const Login = () => {
       
       await AsyncStorage.setItem("user", JSON.stringify(data.user));
 
-      // Navigate to dashboard
+      // navigate to dashboard
       router.replace("/dashboard/home");
 
     } catch (err) {

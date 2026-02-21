@@ -11,7 +11,7 @@ def haversine(lat1, lon1, lat2, lon2):
 
     return 2 * R * math.atan2(math.sqrt(a), math.sqrt(1 - a))
 
-
+# idw computation
 def idw(lat, lon, stations, power=2):
     numerator = 0
     denominator = 0

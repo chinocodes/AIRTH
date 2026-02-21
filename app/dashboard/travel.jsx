@@ -31,7 +31,7 @@ export default function Travel() {
 
   const mapRef = useRef(null);
 
-  // ---------------- GET GPS ON LOAD ----------------
+  //get gps on page load
   useEffect(() => {
     (async () => {
       const { status } = await Location.requestForegroundPermissionsAsync();
@@ -89,7 +89,7 @@ export default function Travel() {
     setLoading(false);
   };
 
-  // ---------------- NAVIGATION MODE ----------------
+  // navigation mode
   useEffect(() => {
     let subscription;
 
@@ -120,7 +120,7 @@ export default function Travel() {
     return () => subscription?.remove();
   }, [navigationActive]);
 
-  // ---------------- TURN BY TURN VIEW ----------------
+  // turn by turn view for navigation
   if (navigationActive) {
     return (
       <View style={{ flex: 1 }}>
@@ -137,7 +137,7 @@ export default function Travel() {
             strokeWidth={6}
           />
 
-          {/* DESTINATION PIN */}
+          {/* destination pin */}
           {endCoords && (
             <Marker
               coordinate={{
@@ -167,7 +167,7 @@ export default function Travel() {
     );
   }
 
-  // ---------------- PREVIEW MODE ----------------
+  // preview mode
   return (
     <KeyboardAvoidingView
       style={styles.container}
@@ -181,7 +181,7 @@ export default function Travel() {
         <View style={styles.headerSpacing} />
 
         <View style={{ paddingHorizontal: 20 }}>
-          {/* START INPUT */}
+          {/* start input */}
           <GooglePlacesAutocomplete
             placeholder={gpsLabel}
             fetchDetails
@@ -196,7 +196,7 @@ export default function Travel() {
             styles={autoStyles}
           />
 
-          {/* DESTINATION INPUT */}
+          {/* destination input */}
           <GooglePlacesAutocomplete
             placeholder="Where are you going?"
             fetchDetails
@@ -222,7 +222,7 @@ export default function Travel() {
 
         {routeData && (
           <>
-            {/* STATS */}
+            {/* route stats */}
             <View style={styles.statsRow}>
               <View style={styles.statCard}>
                 <Text style={styles.statValue}>
@@ -239,7 +239,7 @@ export default function Travel() {
               </View>
             </View>
 
-            {/* MINI MAP */}
+            {/* mini map view */}
             <View style={styles.mapWrapper}>
               <MapView
                 provider={PROVIDER_GOOGLE}

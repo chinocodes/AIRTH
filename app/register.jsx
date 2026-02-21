@@ -9,14 +9,14 @@ const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const handleRegister = async () => {
+  const handleRegister = async () => {  // checks if all fields have been filled
     if (!name || !email || !password || !confirmPassword) {
       Alert.alert('Error', 'Please fill all fields');
       return;
     }
 
-    if (password !== confirmPassword) {
-      Alert.alert('Error', 'Passwords do not match');
+    if (password !== confirmPassword) { // check if passwords match
+      Alert.alert('Error', 'Passwords do not match'); 
       return;
     }
 
