@@ -1,4 +1,5 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
+import { useFocusEffect } from "expo-router";
 import styles from "../home.styles"
 import {
   ScrollView,
@@ -41,6 +42,13 @@ export default function Home() {
   }
 }, [user]);
 
+// refreshes goal progress bar each time the user returns to the page.
+useFocusEffect (
+  useCallback(() => {
+    fetchGoal();
+  }, [])
+);
+
   // Backend city-temperature fetch
   const sendCity = async (city) => {
     try {
@@ -56,19 +64,7 @@ export default function Home() {
     if (location) sendCity(location);
   }, [location]);
 
-  // ---- Fetch AQI from backend ----
-  const fetchAqi = async (lat, lon) => {
-    try {
-      const res = await fetch(
-        // `http://10.178.75.95:8000/aqi/current?lat=${lat}&lon=${lon}`
 
-      );
-      const data = await res.json();
-      if (data.aqi !== undefined) setAqi(data.aqi);
-    } catch (err) {
-      console.log("AQI fetch error:", err);
-    }
-  };
   const fetchGoal = async () => {
   try {
     const token = await AsyncStorage.getItem("token");

@@ -11,7 +11,7 @@ pwd_context = CryptContext(schemes=["sha256_crypt"])
 
 SECRET_KEY = "CHANGE_THIS_TO_A_LONG_RANDOM_SECRET" #change later
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60    #jwt time before expiry
+ACCESS_TOKEN_EXPIRE_MINUTES = 200    #jwt time before expiry
 
 security = HTTPBearer()
 

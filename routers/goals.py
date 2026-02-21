@@ -68,7 +68,7 @@ def create_goal(
     }
 
 @router.get("/api/goals/active")
-def get_active_goal(current_user=Depends(get_current_user)):
+def get_active_goal(current_user=Depends(get_current_user)): # retrieving active goal from db to be dislpayed in progress bar
 
     user_id = current_user
 
@@ -99,3 +99,29 @@ def get_active_goal(current_user=Depends(get_current_user)):
             "status": goal[5],
         }
     }
+@router.post("/api/goals/achieve") # increment the current clean trips value by 1
+def increment_goal(current_user=Depends(get_current_user)) :
+    user_id = current_user
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute("""
+            UPDATE user_goals
+                    SET current_value = current_value + 1
+                    WHERE user_id = %s
+                    RETURNING id, current_value, target_value
+        """, (user_id,))
+        achievement = cur.fetchone()
+        conn.commit()
+        return {
+            "message" : "trips incremented",
+            "achievement" : {
+                "goal_id": achievement[0],
+                "current_value": achievement[1],
+                "target_value": achievement[2]
+            }
+        }
+    finally:
+        cur.close()
+        conn.close()
+# increment_goal(8) # testing clean trip incrementation
