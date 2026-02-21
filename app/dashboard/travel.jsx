@@ -14,6 +14,7 @@ import {
 import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from "react-native-maps";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import * as Location from "expo-location";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 export default function Travel() {
@@ -30,7 +31,22 @@ export default function Travel() {
   const [endCoords, setEndCoords] = useState(null);
 
   const mapRef = useRef(null);
+  const incrementGoal = async () => { // send post request to update current_value in user_goals table
+    try {
+      const token = await AsyncStorage.getItem("token");
 
+      await fetch("http://10.178.75.95:8000/api/goals/achieve", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+    } catch (err) {
+      console.log("error with update", err);
+    }
+  };
   //get gps on page load
   useEffect(() => {
     (async () => {
@@ -151,7 +167,8 @@ export default function Travel() {
 
         <Pressable
           style={styles.exitButton}
-          onPress={() => {
+          onPress={async () => {
+            await incrementGoal(); // calls the incrementGoal function and updates the current_value in the user_goals table
             setNavigationActive(false);
             setRouteData(null);
             setRouteCoords([]);

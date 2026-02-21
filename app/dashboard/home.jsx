@@ -5,6 +5,7 @@ import {
   ScrollView,
   View,
   Text,
+  Pressable,
   StyleSheet,
   Dimensions,
 } from "react-native";
@@ -149,7 +150,7 @@ useFocusEffect (
         style={styles.lottie}
         resizeMode='cover'
       />
-      {/* Header */}
+      {/* header */}
       <View style={styles.header}>
         <Text style={styles.greeting}>
           {user ? `Hey ${user.name}` : "Welcome"}
@@ -157,7 +158,7 @@ useFocusEffect (
         <Text style={styles.subGreeting}>Here’s your air today</Text>
       </View>
 
-      {/* HERO CARD */}
+      {/* card */}
       <View style={styles.heroCard}>
         <View>
           <Text style={styles.city}>{location || errorMsg}</Text>
@@ -204,8 +205,13 @@ useFocusEffect (
           />
         </View>
       </View>
+      <View style={styles.reset}>
+        <Pressable style={styles.resetButton}>
+          <Text style={{ color: "white" }}>Reset</Text>
+        </Pressable>
+      </View>
 
-      {/* MAP */}
+      {/* map preview */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Your Area</Text>
 

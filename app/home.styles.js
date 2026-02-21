@@ -116,6 +116,22 @@ export default StyleSheet.create({
     fontWeight: "600",
     marginBottom: 12,
   },
+  reset: {
+    // justifyContent: "center",
+    // alignItems: "center",
+    alignSelf: "flex-end",
+    right: 5,
+    paddingTop: 13,
+    paddingRight: 13,
+
+  },
+  resetButton : {
+    backgroundColor: "#2ECC71",
+    padding: 14,
+    borderRadius: 13,
+   
+
+  },
   mapWrapper: {
     height: 220,
     borderRadius: 22,
