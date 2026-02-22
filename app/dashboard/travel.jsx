@@ -246,7 +246,7 @@ export default function Travel() {
             <View style={styles.statsRow}>
               <View style={styles.statCard}>
                 <Text style={styles.statValue}>
-                  {routeData.best_route.avg_aqi}
+                  {routeData.best_route.front_AQI}
                 </Text>
                 <Text style={styles.statLabel}>Avg AQI</Text>
               </View>
