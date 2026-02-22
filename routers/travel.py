@@ -31,7 +31,7 @@ def eco_route(
             "instructions": r["instructions"]
         })
 
-    best_route = min(scored_routes, key=lambda r: r["avg_aqi"])
+    best_route = min(scored_routes, key=lambda r: r["front_AQI"])
 
     return {
         "best_route": best_route,
