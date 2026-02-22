@@ -33,6 +33,7 @@ export default function Travel() {
   const mapRef = useRef(null);
   // subtle message under AQI to explain scale
   const aqiNote = (aqi) => {
+    if (aqi == 0) return "No sensors"
     if (aqi <= 50) return "Good";
     if (aqi <= 100) return "Moderate";
     if (aqi <= 150) return "Unhealthy";
