@@ -25,8 +25,9 @@ def eco_route(
         scored_routes.append({
             "distance_m": round(r["distance_m"], 1),
             "duration_min": duration_min,
-            "avg_aqi": exposure,
-            "coords": r["coords"],
+            "exposure": exposure, # raw exposure value, not for frontend
+            "front_AQI": round(exposure / duration_min / 60, 2),
+            "coords": r["coords"], 
             "instructions": r["instructions"]
         })
 
