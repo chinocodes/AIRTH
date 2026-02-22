@@ -100,17 +100,7 @@ const Login = () => {
         </Text>
       </TouchableOpacity>
 
-      <Text style={styles.orText}>Or login with</Text>
-
-      <View style={styles.socialRow}>
-        <TouchableOpacity style={styles.googleBtn}>
-          <Text>Google</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.facebookBtn}>
-          <Text style={styles.facebookText}>Facebook</Text>
-        </TouchableOpacity>
-      </View>
-
+      
       <Text style={styles.registerText}>
         Don't have an account?{" "}
         <Link href="register" style={styles.boldText}>
@@ -118,9 +108,7 @@ const Login = () => {
         </Link>
       </Text>
 
-      <Text style={styles.helpText}>
-        Need help? Visit our <Text style={styles.boldText}>help center</Text>
-      </Text>
+      
     </View>
   );
 };
@@ -182,35 +170,10 @@ const styles = StyleSheet.create({
     marginVertical: 20,
     color: GREEN
   },
-  socialRow: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    gap: 10,
-    marginBottom: 20
-  },
-  googleBtn: {
-    borderWidth: 1,
-    borderColor: GREEN,
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 10
-  },
-  facebookBtn: {
-    backgroundColor: GREEN,
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 10
-  },
-  facebookText: { color: 'white' },
   registerText: {
     textAlign: 'center',
     color: GREEN,
     marginTop: 10
   },
   boldText: { fontWeight: '700' },
-  helpText: {
-    textAlign: 'center',
-    color: GREEN,
-    marginTop: 30
-  },
 });

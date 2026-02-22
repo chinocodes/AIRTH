@@ -98,7 +98,7 @@ useFocusEffect (
   }
 };
 
-  // ---- gps + reverse geocode + AQI fetch ----
+  // get user's location using expo location
   useEffect(() => {
     (async () => {
       const { status } = await Location.requestForegroundPermissionsAsync();
@@ -121,17 +121,16 @@ useFocusEffect (
       const cityName = place.city || place.region || "Unknown";
       setLocation(cityName);
 
-      // fetch real AQI from backend
-      // fetchAqi(latitude, longitude);
+      
     })();
   }, []);
 
   // AQI → color
-  const getAqiColor = () => {
-    if (aqi <= 50) return "#2ECC71";
-    if (aqi <= 100) return "#F1C40F";
-    return "#E74C3C";
-  };
+  // const getAqiColor = () => {
+  //   if (aqi <= 50) return "#2ECC71";
+  //   if (aqi <= 100) return "#F1C40F";
+  //   return "#E74C3C";
+  // };
   useEffect (() => {
     if (currentValue && targetValue && currentValue >= targetValue ) {
       confettiRef.current?.play(0);
@@ -160,10 +159,10 @@ useFocusEffect (
         <Text style={styles.greeting}>
           {user ? `Hey ${user.name}` : "Welcome"}
         </Text>
-        <Text style={styles.subGreeting}>Here’s your air today</Text>
+        <Text style={styles.subGreeting}>Ready for a clean adventure?</Text>
       </View>
 
-      {/* card */}
+      {/* temp card */}
       <View style={styles.heroCard}>
         <View>
           <Text style={styles.city}>{location || errorMsg}</Text>

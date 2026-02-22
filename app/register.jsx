@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
+import { Link, useRouter } from 'expo-router';
 
 const Register = () => {
   const [name, setName] = useState('');
@@ -104,9 +105,9 @@ const Register = () => {
         <Text style={styles.nextText}>{loading ? 'Registering...' : 'Register'}</Text>
       </TouchableOpacity>
 
-      <Text style={styles.helpText}>
-        Need help? Visit our <Text style={styles.helpCenter}>help center</Text>
-      </Text>
+      {/* <Link href="index" style={styles.boldText}>
+        Login
+      </Link> */}
     </View>
   );
 };
@@ -125,6 +126,11 @@ const styles = StyleSheet.create({
   logoContainer: {
     alignItems: 'center',
     marginBottom: 40,
+  },
+  boldText: { 
+    fontWeight: '700',
+    color: green
+
   },
   logo: {
     width: 70,
