@@ -54,7 +54,7 @@ export default function GoalSetter() {
       }
 
       const res = await fetch(
-        "http://10.178.75.95:8000/api/goals/create",
+        "https://web-production-ca09b.up.railway.app/api/goals/create",
         {
           method: "POST",
           headers: {

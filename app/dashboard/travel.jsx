@@ -35,7 +35,7 @@ export default function Travel() {
     try {
       const token = await AsyncStorage.getItem("token");
 
-      await fetch("http://10.178.75.95:8000/api/goals/achieve", {
+      await fetch("https://web-production-ca09b.up.railway.app/api/goals/achieve", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -93,7 +93,7 @@ export default function Travel() {
     setLoading(true);
 
     const res = await fetch(
-      `http://10.178.75.95:8000/travel/eco-route?start_lat=${start.lat}&start_lon=${start.lon}&end_lat=${endCoords.lat}&end_lon=${endCoords.lon}`
+      `https://web-production-ca09b.up.railway.app/travel/eco-route?start_lat=${start.lat}&start_lon=${start.lon}&end_lat=${endCoords.lat}&end_lon=${endCoords.lon}`
     );
 
     const data = await res.json();

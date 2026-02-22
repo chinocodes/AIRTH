@@ -24,7 +24,7 @@ const Register = () => {
     setLoading(true);
 
     try {
-      const response = await fetch('http://10.178.75.95:8000/api/register', {
+      const response = await fetch('https://web-production-ca09b.up.railway.app/api/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, password }),

@@ -54,7 +54,7 @@ useFocusEffect (
   const sendCity = async (city) => {
     try {
       const res = await fetch(
-        `http://10.178.75.95:8000/save-city?city=${city}`
+        `https://web-production-ca09b.up.railway.app/save-city?city=${city}`
       );
       const data = await res.json();
       if (data.temp !== undefined) setTemp(data.temp);
@@ -70,7 +70,7 @@ useFocusEffect (
   try {
     const token = await AsyncStorage.getItem("token");
 
-    const res = await fetch(`http://10.178.75.95:8000/api/goals/active`, {
+    const res = await fetch(`https://web-production-ca09b.up.railway.app/api/goals/active`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
