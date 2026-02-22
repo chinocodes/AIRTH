@@ -31,6 +31,14 @@ export default function Travel() {
   const [endCoords, setEndCoords] = useState(null);
 
   const mapRef = useRef(null);
+  // subtle message under AQI to explain scale
+  const aqiNote = (aqi) => {
+    if (aqi <= 50) return "Good";
+    if (aqi <= 100) return "Moderate";
+    if (aqi <= 150) return "Unhealthy";
+    if (aqi <= 200) return "Very Polluted";
+    return "Please stay indoors";
+  };
   const incrementGoal = async () => { // send post request to update current_value in user_goals table
     try {
       const token = await AsyncStorage.getItem("token");
@@ -248,7 +256,8 @@ export default function Travel() {
                 <Text style={styles.statValue}>
                   {routeData.best_route.front_AQI}
                 </Text>
-                <Text style={styles.statLabel}>Avg AQI</Text>
+                <Text>{aqiNote(routeData.best_route.front_AQI)}</Text>
+                <Text style={styles.statLabel}>Route AQI</Text>
               </View>
 
               <View style={styles.statCard}>
