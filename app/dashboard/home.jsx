@@ -177,7 +177,7 @@ useFocusEffect (
       {/* info */}
       <View style={styles.pillRow}>
         <View style={styles.pill}>
-          <Text style={styles.pillTitle}>Recommendations</Text>
+          <Text style={styles.pillTitle}>Message</Text>
           <Text style={styles.pillValue}>
             {temp <= 15 ? "Its a bit chilly outside" : temp <= 20 ? "Nice and warm today" : "Its very hot"}
           </Text>

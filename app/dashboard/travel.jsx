@@ -167,13 +167,16 @@ export default function Travel() {
 
         <Pressable
           style={styles.exitButton}
-          onPress={async () => {
-            await incrementGoal(); // calls the incrementGoal function and updates the current_value in the user_goals table
+          onPress={ () => {
+            
             setNavigationActive(false);
             setRouteData(null);
             setRouteCoords([]);
             setManualStartCoords(null);
             setEndCoords(null);
+            incrementGoal().catch((err) => { // backend called in background to prevent front end lag
+              console.log("error incrementing goal", err);
+            }); 
           }}
         >
           <Text style={{ color: "white", fontWeight: "700" }}>
