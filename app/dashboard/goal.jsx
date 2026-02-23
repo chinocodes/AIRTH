@@ -41,6 +41,10 @@ export default function GoalSetter() {
       Alert.alert("Invalid Dates", "End date must be after start date.");
       return;
     }
+    if (startDate < new Date()) {
+      Alert.alert("Invalid Start Date", "Start date must be today or a future date")
+      return;
+    }
 
     try {
       setLoading(true);

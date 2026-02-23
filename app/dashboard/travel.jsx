@@ -88,7 +88,7 @@ export default function Travel() {
       latitude: lat,
       longitude: lon,
     }));
-
+// get optimal route from backend
   const fetchRoute = async () => {
     const start =
       manualStartCoords ||
@@ -210,7 +210,7 @@ export default function Travel() {
         <View style={styles.headerSpacing} />
 
         <View style={{ paddingHorizontal: 20 }}>
-          {/* start input */}
+          {/* start point set to user's location */}
           <GooglePlacesAutocomplete
             placeholder={gpsLabel}
             fetchDetails

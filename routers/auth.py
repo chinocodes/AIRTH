@@ -5,11 +5,15 @@ from passlib.context import CryptContext
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
 from utils.db import get_connection
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 router = APIRouter()
 pwd_context = CryptContext(schemes=["sha256_crypt"])
 
-SECRET_KEY = "CHANGE_THIS_TO_A_LONG_RANDOM_SECRET" #change later
+SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 200    #jwt time before expiry
 
