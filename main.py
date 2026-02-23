@@ -7,7 +7,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from routers.auth import router as auth_router
 from routers.weather import router as weather_router
 from routers.travel import router as travel_router
-from routers.current_aqi import router as aqi_router
 from routers import goals
 
 
@@ -27,7 +26,6 @@ app.add_middleware(
 app.include_router(auth_router)
 app.include_router(weather_router)
 app.include_router(travel_router)
-app.include_router(aqi_router)
 app.include_router(goals.router)
 
 
