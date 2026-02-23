@@ -30,7 +30,7 @@ class RegisterModel(BaseModel):
 
 def create_access_token(data: dict):
     to_encode = data.copy()
-    expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES) # set token lifespan to the lifespan defined
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
@@ -103,13 +103,14 @@ def login(user: LoginModel):
 def register(user: RegisterModel):
     conn = get_connection()
     cur = conn.cursor()
-
+    # check if user already exists in database
     cur.execute("SELECT id FROM users WHERE email=%s", (user.email,))
     if cur.fetchone():
         cur.close()
         conn.close()
         raise HTTPException(status_code=400, detail="User already exists")
-
+    
+    # password hashed before inserting into database
     hashed_pw = pwd_context.hash(user.password)
 
     cur.execute("""

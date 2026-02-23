@@ -28,6 +28,7 @@ export default function GoalSetter() {
   const formatDate = (date) => {
     return date.toISOString().split("T")[0];
   };
+  const today = new Date().setHours(0, 0, 0, 0);
 
   const handleSubmit = async () => {
     Keyboard.dismiss(); //  dismiss keyboard on submit
@@ -41,7 +42,7 @@ export default function GoalSetter() {
       Alert.alert("Invalid Dates", "End date must be after start date.");
       return;
     }
-    if (startDate < new Date()) {
+    if (startDate < today) {
       Alert.alert("Invalid Start Date", "Start date must be today or a future date")
       return;
     }
