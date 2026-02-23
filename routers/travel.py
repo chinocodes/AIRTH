@@ -19,8 +19,8 @@ def eco_route(
     scored_routes = []
 
     for r in routes:
-        exposure = route_exposure(r["coords"]) # finds exposure for each route
-        duration_min = round(r["duration_s"] / 60, 1) # convert duration into minutes and rounds to whole number
+        exposure = route_exposure(r["coords"])
+        duration_min = round(r["duration_s"] / 60, 1)
 
         scored_routes.append({
             "distance_m": round(r["distance_m"], 1),
