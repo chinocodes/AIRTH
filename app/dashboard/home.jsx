@@ -105,6 +105,22 @@ const formattedEndDate = new Date(endDate).toLocaleDateString("en-GB", {day: "nu
 const dateDiff = endDate - startDate;
 const daysDiff = dateDiff / (1000 * 60 * 60 * 24) // convert from milliseconds to days
 
+const deleteGoal = async () => {
+  try {
+    const token = await AsyncStorage.getItem("token");
+
+      await fetch("https://web-production-ca09b.up.railway.app/api/goals/delete", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+  } catch (err) {
+    console.log("error deleting goal", err)
+  }
+}
+
   // get user's location using expo location
   useEffect(() => {
     (async () => {

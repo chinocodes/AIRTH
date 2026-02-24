@@ -125,3 +125,18 @@ def increment_goal(current_user=Depends(get_current_user)) :
         cur.close()
         conn.close()
 # increment_goal(8) # testing clean trip incrementation
+@router.post("/api/goals/delete")
+def delete_goal (current_user=Depends(get_current_user)) :
+    user_id = current_user
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute("""
+            DELETE FROM user_goals
+                    WHERE user_id = %s
+       """, (user_id,))
+        conn.commit()
+        return {"message" : "goal deleted"}
+    finally:
+        cur.close()
+        conn.close()
