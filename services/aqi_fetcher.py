@@ -8,10 +8,8 @@ WAQI_BOUNDS_URL = "https://api.waqi.info/map/bounds/"
 WAQI_TOKEN = os.getenv("WAQI_TOKEN")  
 
 def fetch_live_aqi(lat, lon, box_size=0.1):
-    """
-    fetch dozens of AQI stations around (lat, lon) using WAQI bounding-box API.
-    returns real stations with individual AQI values.
-    """
+    
+    # fetches dozens of aqi stations found around the (lat, lon)
 
     # creatr bounding box (lat/lon ± box_size)
     # box_size=0.1 ≈ ~11km;
