@@ -115,6 +115,7 @@ const deleteGoal = async () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
+        body: JSON.stringify({}) // send empty json body
       });
   } catch (err) {
     console.log("error deleting goal", err)
@@ -184,6 +185,7 @@ const deleteGoal = async () => {
         }}><Text style={styles.backButtonText}>Go Back</Text></Pressable>
         <Pressable style={styles.deleteButton} onPress={ () => {
           deleteGoal(false);
+          
         }}><Text style={styles.backButtonText}>Delete Goal</Text></Pressable>
       
       
@@ -251,7 +253,9 @@ const deleteGoal = async () => {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Clean Trips</Text>
         <Pressable onPress={ () => {
+          if (targetValue) { // view restricted to those with goal
           setAchievementVisible(true);
+          }
         }}>
         <View style={styles.progressCard}>
           <Text style={styles.progressText}>You've completed {currentValue} of {targetValue} 🌱</Text>
