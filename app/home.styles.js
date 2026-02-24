@@ -17,6 +17,41 @@ export default StyleSheet.create({
   content: {
     paddingBottom: 120,
   },
+  backButton: {
+    backgroundColor: "#2ECC71",
+    padding: 14,
+    borderRadius: 12,
+    marginHorizontal: 20,
+    alignItems: "center",
+    marginTop: 12,
+    marginBottom: 12
+  },
+  deleteButton: {
+    backgroundColor: "rgb(236, 5, 5)",
+    padding: 14,
+    borderRadius: 12,
+    marginHorizontal: 20,
+    alignItems: "center",
+  },
+  backButtonText: {
+    color: "#ffffff",
+    fontWeight: "bold"
+
+  },
+  achievementTexts: {
+    color: "#111",
+    fontSize: 20,
+    fontWeight: "800",
+    letterSpacing: 0.5,
+    textAlign: "center",
+    padding: 20,
+  },
+  acheivementContainer: {
+    backgroundColor: "#ffffff",
+    borderRadius: 30,
+    padding: 12,
+    marginVertical: 10
+  },
   header: {
     paddingTop: 60,
     paddingHorizontal: 24,
@@ -45,6 +80,8 @@ export default StyleSheet.create({
     shadowRadius: 15,
     shadowOffset: { width: 0, height: 8 },
   },
+  logoContainer: { alignItems: 'center', marginBottom: 30, paddingTop: 50 },
+  logo: { width: 80, height: 80, marginBottom: 5 },
   city: {
     fontSize: 18,
     color: "#666",

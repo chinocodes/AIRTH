@@ -8,6 +8,7 @@ import {
   Pressable,
   StyleSheet,
   Dimensions,
+  Image,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Location from "expo-location";
@@ -30,6 +31,7 @@ export default function Home() {
   const [currentValue, setCurrentValue] = useState(0);
   const confettiRef = useRef(null);
   const [goalComplete, setGoalComplete] = useState(null);
+  const [achievementVisible, setAchievementVisible] = useState(false);
 
   // Load stored user
   useEffect(() => {
@@ -97,6 +99,11 @@ useFocusEffect (
     console.log("error message: ", err);
   }
 };
+// convert dates into displayable format
+const formattedStartDate = new Date(startDate).toLocaleDateString("en-GB", {day: "numeric", month: "short", year: "numeric"});
+const formattedEndDate = new Date(endDate).toLocaleDateString("en-GB", {day: "numeric", month: "short", year: "numeric"});
+const dateDiff = endDate - startDate;
+const daysDiff = dateDiff / (1000 * 60 * 60 * 24) // convert from milliseconds to days
 
   // get user's location using expo location
   useEffect(() => {
@@ -138,7 +145,40 @@ useFocusEffect (
     }
     
   });
+  // return the achievement screen if the user clicks on the prgoress card
+  if (achievementVisible) {
+    return (
+      <ScrollView><View style={styles.container}>
+        <View style={styles.acheivementContainer}>
+        <View style={styles.logoContainer}>
+                <Image source={require('../../assets/leaf.png')} style={styles.logo} />
+              </View>
+        
+        <Text style={styles.achievementTexts}>You've completed {currentValue} trips</Text>
+        <Text style={styles.achievementTexts}>Your goal is {targetValue} </Text>
+        <Text style={styles.achievementTexts}>Start: {formattedStartDate} </Text>
+        <Text style={styles.achievementTexts}>End: {formattedEndDate} </Text>
+        <Text style={styles.achievementTexts}>{daysDiff} days left </Text>
 
+
+        </View>
+        
+        <Pressable style={styles.backButton} onPress={ () => {
+          setAchievementVisible(false);
+        }}><Text style={styles.backButtonText}>Go Back</Text></Pressable>
+        <Pressable style={styles.deleteButton} onPress={ () => {
+          deleteGoal(false);
+        }}><Text style={styles.backButtonText}>Delete Goal</Text></Pressable>
+      
+      
+      
+      
+      
+      </View></ScrollView>
+      
+      
+    )
+  }
   return (
     <ScrollView
       style={styles.container}
@@ -194,7 +234,9 @@ useFocusEffect (
       {/* clean trips */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Clean Trips</Text>
-
+        <Pressable onPress={ () => {
+          setAchievementVisible(true);
+        }}>
         <View style={styles.progressCard}>
           <Text style={styles.progressText}>You've completed {currentValue} of {targetValue} 🌱</Text>
           <Text style={styles.progressText}>{goalComplete}</Text>
@@ -208,6 +250,7 @@ useFocusEffect (
             borderRadius={10}
           />
         </View>
+        </Pressable>
       </View>
       <View style={styles.reset}>
         <Pressable style={styles.resetButton}>
