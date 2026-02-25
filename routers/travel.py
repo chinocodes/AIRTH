@@ -20,7 +20,7 @@ def eco_route(
 
     for r in routes:
         exposure = route_exposure(r["coords"])
-        duration_min = round(r["duration_s"] / 60, 1) 
+        duration_min = round(r["duration_s"] / 60, 1) # convert duration to minutes, and round to 1 d.p
 
         scored_routes.append({
             "distance_m": round(r["distance_m"], 1),
@@ -30,11 +30,7 @@ def eco_route(
             "coords": r["coords"], 
             "instructions": r["instructions"]
         })
-
+    # find route with the minimum exposure
     best_route = min(scored_routes, key=lambda r: r["front_AQI"])
 
-    return {
-        "best_route": best_route,
-        "all_routes": scored_routes,
-        "method": "Inverse Distance Weighting (p=2)"
-    }
+    return {"best_route": best_route}
