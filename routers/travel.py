@@ -13,7 +13,7 @@ def eco_route(
     end_lon: float
 ):
     routes = get_alternative_routes(start_lat, start_lon, end_lat, end_lon)
-    print("TOTAL ROUTES FOUND:", len(routes))
+    print("TOTAL ROUTES FOUND LOOK HERE:", len(routes))
 
     if not routes:
         return {"error": "No walking routes found."}
