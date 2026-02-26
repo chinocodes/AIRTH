@@ -13,7 +13,7 @@ def eco_route(
     end_lon: float
 ):
     routes = get_alternative_routes(start_lat, start_lon, end_lat, end_lon)
-    print("TOTAL ROUTES FOUND LOOK HERE:", len(routes))
+    print("TOTAL ROUTES FOUND LOOK HERE:", len(routes)) # check number of routes found
 
     if not routes:
         return {"error": "No walking routes found."}
@@ -32,7 +32,7 @@ def eco_route(
             "coords": r["coords"], 
             "instructions": r["instructions"]
         })
-
+    print(scored_routes)
     best_route = min(scored_routes, key=lambda r: r["front_AQI"])
 
     return {"best_route": best_route}
