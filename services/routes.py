@@ -20,7 +20,7 @@ def get_routes(start_lat, start_lon, end_lat, end_lon):
     )
 
     res = requests.get(url).json()
-    print (len(res["paths"]))
+    print("This is the number of paths "+len(res["paths"]))
 
     if "paths" not in res or len(res["paths"]) == 0:
         print("GraphHopper ERROR:", res)
