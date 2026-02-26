@@ -114,7 +114,7 @@ const Register = () => {
 
 export default Register;
 
-const green = '#005F15';
+const green = '#2ECC71';
 
 const styles = StyleSheet.create({
   container: {

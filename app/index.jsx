@@ -115,7 +115,7 @@ const Login = () => {
 
 export default Login;
 
-const GREEN = '#0a5c0a';
+const GREEN = '#2ECC71';
 
 const styles = StyleSheet.create({
   container: {

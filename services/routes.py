@@ -8,15 +8,21 @@ GRAPHOPPER_API_KEY = os.getenv("GRAPHOPPER_API_KEY")
 
 def get_routes(start_lat, start_lon, end_lat, end_lon):
     url = (
-        "https://graphhopper.com/api/1/route?"
-        f"point={start_lat},{start_lon}"
-        f"&point={end_lat},{end_lon}"
-        "&profile=foot"
-        "&locale=en"
-        "&calc_points=true"
-        "&instructions=true"
-        "&points_encoded=false"
-        f"&key={GRAPHOPPER_API_KEY}"
+    "https://graphhopper.com/api/1/route?"
+    f"point={start_lat},{start_lon}"
+    f"&point={end_lat},{end_lon}"
+    "&profile=foot"
+    "&locale=en"
+    "&calc_points=true"
+    "&instructions=true"
+    "&points_encoded=false"
+
+    # enables alternative routes
+    "&ch.disable=true"
+    "&algorithm=alternative_route"
+    "&alternative_route.max_paths=3"
+
+    f"&key={GRAPHOPPER_API_KEY}"
     )
 
     res = requests.get(url).json()
