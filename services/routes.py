@@ -9,9 +9,9 @@ load_dotenv()
 HERE_CLIENT_ID = os.getenv("HERE_CLIENT_ID")
 HERE_CLIENT_SECRET = os.getenv("HERE_CLIENT_SECRET")
 
-
-# here auth
-
+# ===========================
+# HERE AUTH
+# ===========================
 
 HERE_TOKEN_URL = "https://account.api.here.com/oauth2/token"
 
@@ -38,15 +38,74 @@ def get_cached_token():
     return here_token
 
 
-# routing function
+# ===========================
+# POLYLINE DECODER
+# (HERE Flexible Polyline)
+# ===========================
+
+# Official HERE flexible polyline decoder (safe + correct)
+def decode_flexible_polyline(encoded):
+    import math
+
+    def _to_value(char):
+        return ord(char) - 63
+
+    precision = 5
+    index = 0
+    shift = 0
+    result = 0
+    coordinates = []
+    lat = 0
+    lng = 0
+
+    # decode header
+    header = _to_value(encoded[index])
+    index += 1
+
+    precision = math.pow(10, (header >> 3) & 0x0f)
+
+    header = header >> 4
+
+    while index < len(encoded):
+        shift = 0
+        result = 0
+
+        # latitude
+        while True:
+            b = _to_value(encoded[index])
+            index += 1
+            result |= (b & 0x1f) << shift
+            shift += 5
+            if b < 0x20:
+                break
+
+        delta_lat = ~(result >> 1) if (result & 1) else (result >> 1)
+        lat += delta_lat
+
+        # longitude
+        shift = 0
+        result = 0
+        while True:
+            b = _to_value(encoded[index])
+            index += 1
+            result |= (b & 0x1f) << shift
+            shift += 5
+            if b < 0x20:
+                break
+
+        delta_lng = ~(result >> 1) if (result & 1) else (result >> 1)
+        lng += delta_lng
+
+        coordinates.append((lat / precision, lng / precision))
+
+    return coordinates
+
+
+# ===========================
+# GET ROUTES
+# ===========================
 
 HERE_ROUTE_URL = "https://router.hereapi.com/v8/routes"
-
-
-def decode_polyline(polyline):
-    """HERE returns GeoJSON-like polyline: list of [lat, lon]"""
-    # Ensure it's always (lat, lon)
-    return [(pt[0], pt[1]) for pt in polyline]
 
 
 def get_routes(start_lat, start_lon, end_lat, end_lon, alternatives=2):
@@ -72,24 +131,25 @@ def get_routes(start_lat, start_lon, end_lat, end_lon, alternatives=2):
     for route in res["routes"]:
         section = route["sections"][0]
 
-        # polyline is already a list of [lat, lon]
-        coords = decode_polyline(section["polyline"])
+        # Decode properly (HERE gives encoded flexible polyline)
+        encoded_polyline = section["polyline"]
+        coords = decode_flexible_polyline(encoded_polyline)
 
-        # Convert instructions to your format
+        # Format instructions properly
         instructions = []
-        for instr in section.get("instructions", []):
+        for step in section.get("instructions", []):
             instructions.append({
-                "text": instr.get("text", ""),
-                "interval": instr.get("offset", 0),
-                "distance_m": instr.get("length", 0),
-                "time_s": instr.get("duration", 0)
+                "text": step.get("text", ""),
+                "distance_m": step.get("length", 0),
+                "time_s": step.get("duration", 0),
+                "offset": step.get("offset", 0),
             })
 
         all_routes.append({
             "distance_m": section["summary"]["length"],
             "duration_s": section["summary"]["duration"],
             "coords": coords,
-            "instructions": instructions
+            "instructions": instructions,
         })
 
     return all_routes
