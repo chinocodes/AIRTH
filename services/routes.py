@@ -28,6 +28,9 @@ def get_routes(start_lat, start_lon, end_lat, end_lon, alternatives=True):
     )
 
     res = requests.get(url).json()
+    print("ROUTES FOUND:", len(res.get("routes", [])))
+    for i, route in enumerate(res.get("routes", [])):
+            print(f"Route {i}: distance = {route['distance']}m, duration = {route['duration']}s")
 
     if "routes" not in res or len(res["routes"]) == 0:
         print("MAPBOX ERROR:", res)
