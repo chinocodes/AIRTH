@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 from services.routes import get_routes
 from services.exposure import route_exposure
+from services.get_alts import get_alternative_routes  
 
 router = APIRouter(prefix="/travel")
 
@@ -11,7 +12,7 @@ def eco_route(
     end_lat: float,
     end_lon: float
 ):
-    routes = get_routes(start_lat, start_lon, end_lat, end_lon)
+    routes = get_alternative_routes(start_lat, start_lon, end_lat, end_lon)
 
     if not routes:
         return {"error": "No walking routes found."}
@@ -30,7 +31,7 @@ def eco_route(
             "coords": r["coords"], 
             "instructions": r["instructions"]
         })
-    # find route with the minimum exposure
+
     best_route = min(scored_routes, key=lambda r: r["front_AQI"])
 
     return {"best_route": best_route}
