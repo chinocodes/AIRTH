@@ -21,9 +21,11 @@ def get_routes(start_lat, start_lon, end_lat, end_lon, alternatives=True):
 
     url = (
         f"{MAPBOX_URL}{coords}"
-        f"?alternatives={'true' if alternatives else 'false'}"
+        f"?alternatives=true"
         f"&geometries=polyline"
         f"&steps=true"
+        f"&walkway_bias=2.0"
+        f"&alley_bias=0.5"
         f"&access_token={MAPBOX_TOKEN}"
     )
 
