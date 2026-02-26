@@ -1,53 +1,95 @@
-import requests
 import os
+import time
+import requests
 from dotenv import load_dotenv
+from requests.auth import HTTPBasicAuth
 
 load_dotenv()
 
-GRAPHOPPER_API_KEY = os.getenv("GRAPHOPPER_API_KEY") 
+HERE_CLIENT_ID = os.getenv("HERE_CLIENT_ID")
+HERE_CLIENT_SECRET = os.getenv("HERE_CLIENT_SECRET")
 
-def get_routes(start_lat, start_lon, end_lat, end_lon):
-    url = (
-        "https://graphhopper.com/api/1/route?"
-        f"point={start_lat},{start_lon}"
-        f"&point={end_lat},{end_lon}"
-        "&profile=foot"
-        "&locale=en"
-        "&calc_points=true"
-        "&instructions=true"
-        "&points_encoded=false"
-        f"&key={GRAPHOPPER_API_KEY}"
-    )
 
-    res = requests.get(url).json()
-    print("This is the number of paths "+len(res["paths"]))
+# here auth
 
-    if "paths" not in res or len(res["paths"]) == 0:
-        print("GraphHopper ERROR:", res)
+
+HERE_TOKEN_URL = "https://account.api.here.com/oauth2/token"
+
+here_token = None
+here_token_expiry = 0
+
+
+def get_here_token(client_id, client_secret):
+    data = {"grant_type": "client_credentials"}
+    auth = HTTPBasicAuth(client_id, client_secret)
+
+    res = requests.post(HERE_TOKEN_URL, data=data, auth=auth).json()
+    return res["access_token"], time.time() + res["expires_in"]
+
+
+def get_cached_token():
+    global here_token, here_token_expiry
+
+    if (not here_token) or (time.time() >= here_token_expiry):
+        here_token, here_token_expiry = get_here_token(
+            HERE_CLIENT_ID, HERE_CLIENT_SECRET
+        )
+
+    return here_token
+
+
+# routing function
+
+HERE_ROUTE_URL = "https://router.hereapi.com/v8/routes"
+
+
+def decode_polyline(polyline):
+    """HERE returns GeoJSON-like polyline: list of [lat, lon]"""
+    # Ensure it's always (lat, lon)
+    return [(pt[0], pt[1]) for pt in polyline]
+
+
+def get_routes(start_lat, start_lon, end_lat, end_lon, alternatives=2):
+    token = get_cached_token()
+    headers = {"Authorization": f"Bearer {token}"}
+
+    params = {
+        "transportMode": "pedestrian",
+        "origin": f"{start_lat},{start_lon}",
+        "destination": f"{end_lat},{end_lon}",
+        "alternatives": alternatives,
+        "return": "polyline,summary,instructions",
+    }
+
+    res = requests.get(HERE_ROUTE_URL, headers=headers, params=params).json()
+
+    if "routes" not in res or len(res["routes"]) == 0:
+        print("HERE ERROR:", res)
         return []
 
-    optimal_routes = []
+    all_routes = []
 
-    for p in res["paths"]:
+    for route in res["routes"]:
+        section = route["sections"][0]
 
-        # graphhopper returns [lon, lat]
-        coords = [(lat, lon) for lon, lat in p["points"]["coordinates"]]
+        # polyline is already a list of [lat, lon]
+        coords = decode_polyline(section["polyline"])
 
-        # instructions for graphhopper
+        # Convert instructions to your format
         instructions = []
-        for instr in p["instructions"]:
+        for instr in section.get("instructions", []):
             instructions.append({
-                "text": instr["text"],
-                "interval": instr["interval"],
-                "distance_m": instr["distance"],
-                "time_s": instr["time"] / 1000
+                "text": instr.get("text", ""),
+                "interval": instr.get("offset", 0),
+                "distance_m": instr.get("length", 0),
+                "time_s": instr.get("duration", 0)
             })
 
-        optimal_routes.append({
-            "distance_m": p["distance"],
-            "duration_s": p["time"] / 1000,
+        all_routes.append({
+            "distance_m": section["summary"]["length"],
+            "duration_s": section["summary"]["duration"],
             "coords": coords,
             "instructions": instructions
         })
 
-    return optimal_routes
+    return all_routes
