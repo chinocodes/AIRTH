@@ -26,7 +26,7 @@ def get_routes(start_lat, start_lon, end_lat, end_lon):
         print("GraphHopper ERROR:", res)
         return []
 
-    optimal_routes = []
+    base_route = []
 
     for p in res["paths"]:
 
@@ -43,11 +43,11 @@ def get_routes(start_lat, start_lon, end_lat, end_lon):
                 "time_s": instr["time"] / 1000
             })
 
-        optimal_routes.append({
+        base_route.append({
             "distance_m": p["distance"],
             "duration_s": p["time"] / 1000,
             "coords": coords,
             "instructions": instructions
         })
 
-    return optimal_routes
+    return base_route
