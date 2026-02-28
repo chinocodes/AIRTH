@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
     paddingTop: 60
   },
   logoContainer: { alignItems: 'center', marginBottom: 30 },
-  logo: { width: 80, height: 80, marginBottom: 5 },
+  logo: { width: 120, height: 80, marginBottom: 5 },
   title: {
     fontSize: 32,
     fontWeight: '700',

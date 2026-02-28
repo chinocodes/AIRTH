@@ -133,8 +133,8 @@ const styles = StyleSheet.create({
 
   },
   logo: {
-    width: 70,
-    height: 70,
+    width: 120,
+    height: 80,
     resizeMode: 'contain',
   },
   title: {

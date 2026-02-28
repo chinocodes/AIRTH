@@ -27,7 +27,7 @@ export default StyleSheet.create({
     marginBottom: 12
   },
   deleteButton: {
-    backgroundColor: "rgb(236, 5, 5)",
+    backgroundColor: "#ec0505",
     padding: 14,
     borderRadius: 12,
     marginHorizontal: 20,

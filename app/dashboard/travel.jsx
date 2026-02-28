@@ -15,6 +15,7 @@ import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from "react-native-maps";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import * as Location from "expo-location";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { BarChart, LineChart, PieChart, PopulationPyramid, RadarChart, BubbleChart } from "react-native-gifted-charts";
 
 
 export default function Travel() {
@@ -29,6 +30,7 @@ export default function Travel() {
 
   const [manualStartCoords, setManualStartCoords] = useState(null);
   const [endCoords, setEndCoords] = useState(null);
+  const [chartsMode, setChartsMode] = useState(false);
 
   const mapRef = useRef(null);
   // subtle message under AQI to explain scale
@@ -113,6 +115,7 @@ export default function Travel() {
 
     setLoading(false);
   };
+  
 
   // navigation mode
   useEffect(() => {
@@ -144,6 +147,7 @@ export default function Travel() {
 
     return () => subscription?.remove();
   }, [navigationActive]);
+  
 
   // turn by turn view for navigation
   if (navigationActive) {
@@ -194,6 +198,19 @@ export default function Travel() {
         </Pressable>
       </View>
     );
+  }
+  // charts
+  const data=[ {value:50}, {value:80}, {value:90}, {value:70} ]
+
+  if (chartsMode) {
+    return (
+      <ScrollView><View>
+        
+        <BarChart data = {data} />
+        <Pressable onPress={ () => {setChartsMode(false)}}><Text>Back</Text></Pressable>
+      </View>
+      </ScrollView>
+    )
   }
 
   // preview mode
@@ -257,8 +274,10 @@ export default function Travel() {
                 <Text style={styles.statValue}>
                   {routeData.best_route.front_AQI}
                 </Text>
+                <Pressable onPress={ () => {setChartsMode(true)}}>
                 <Text>{aqiNote(routeData.best_route.front_AQI)}</Text>
                 <Text style={styles.statLabel}>Route AQI</Text>
+                </Pressable>
               </View>
 
               <View style={styles.statCard}>
