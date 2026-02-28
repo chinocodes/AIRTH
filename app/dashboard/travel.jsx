@@ -37,10 +37,10 @@ export default function Travel() {
   // subtle message under AQI to explain scale
   const aqiNote = (aqi) => {
     if (aqi == 0) return "No sensors"
-    if (aqi <= 35) return "Good air";
-    if (aqi <= 50) return "Moderate";
-    if (aqi <= 65) return "Poor";
-    if (aqi <= 85) return "Unhealthy";
+    if (aqi <= 30) return "Good air";
+    if (aqi <= 60) return "Moderate";
+    if (aqi <= 100) return "Poor";
+    if (aqi <= 150) return "Unhealthy";
     return "Please stay indoors";
   };
   const incrementGoal = async () => { // send post request to update current_value in user_goals table
