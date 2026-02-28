@@ -24,6 +24,7 @@ export default function Travel() {
 
   const [navigationActive, setNavigationActive] = useState(false);
   const [routeCoords, setRouteCoords] = useState([]);
+  const [compareRoutes, setCompareRoutes] = useState([]);
 
   const [gpsLocation, setGpsLocation] = useState(null);
   const [gpsLabel, setGpsLabel] = useState("Your Location");
@@ -111,7 +112,11 @@ export default function Travel() {
     setRouteData(data);
 
     const coords = convertCoords(data.best_route.coords);
-    setRouteCoords(coords);
+    const compareRoutes = data.alternatives.map(r => ({
+      duration: r.duration_min,
+      exposure: r.exposure,
+    }));
+    setCompareRoutes(compareRoutes);
 
     setLoading(false);
   };
@@ -200,13 +205,13 @@ export default function Travel() {
     );
   }
   // charts
-  const data=[ {value:50}, {value:80}, {value:90}, {value:70} ]
+ 
 
   if (chartsMode) {
     return (
       <ScrollView><View>
         
-        <BarChart data = {data} />
+        <BarChart data = {compareRoutes} barWidth={40} frontColor="#2ECC71" yAxisTextStyle={{color: '#333'}} xAxisLabelTextStyle={{color: '#333'}} spacing={30} />
         <Pressable onPress={ () => {setChartsMode(false)}}><Text>Back</Text></Pressable>
       </View>
       </ScrollView>

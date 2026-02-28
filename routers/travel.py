@@ -35,4 +35,6 @@ def eco_route(
     # find route with the minimum exposure
     best_route = min(scored_routes, key=lambda r: r["front_AQI"])
 
-    return {"best_route": best_route}
+    return {"best_route": best_route,
+            "alternatives": scored_routes
+            }
