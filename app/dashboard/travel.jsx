@@ -15,8 +15,7 @@ import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from "react-native-maps";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import * as Location from "expo-location";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { BarChart, LineChart, PieChart, PopulationPyramid, RadarChart, BubbleChart } from "react-native-gifted-charts";
-
+import { BarChart } from "react-native-gifted-charts";
 
 export default function Travel() {
   const [routeData, setRouteData] = useState(null);
@@ -24,7 +23,6 @@ export default function Travel() {
 
   const [navigationActive, setNavigationActive] = useState(false);
   const [routeCoords, setRouteCoords] = useState([]);
-  const [compareRoutes, setCompareRoutes] = useState([]);
 
   const [gpsLocation, setGpsLocation] = useState(null);
   const [gpsLabel, setGpsLabel] = useState("Your Location");
@@ -33,11 +31,13 @@ export default function Travel() {
   const [endCoords, setEndCoords] = useState(null);
   const [chartsMode, setChartsMode] = useState(false);
 
+  const [compareRoutes, setCompareRoutes] = useState([]);
+
   const mapRef = useRef(null);
   // subtle message under AQI to explain scale
   const aqiNote = (aqi) => {
     if (aqi == 0) return "No sensors"
-    if (aqi <= 35) return "Good";
+    if (aqi <= 35) return "Good air";
     if (aqi <= 50) return "Moderate";
     if (aqi <= 65) return "Poor";
     if (aqi <= 85) return "Unhealthy";
@@ -112,11 +112,13 @@ export default function Travel() {
     setRouteData(data);
 
     const coords = convertCoords(data.best_route.coords);
-    const compareRoutes = data.alternatives.map(r => ({
-      duration: r.duration_min,
-      exposure: r.exposure,
+    setRouteCoords(coords);
+
+    const mapped = data.alternatives.map(r => ({
+      value: r.exposure,
+      label: `${r.duration_min}m`,
     }));
-    setCompareRoutes(compareRoutes);
+    setCompareRoutes(mapped);
 
     setLoading(false);
   };
@@ -205,14 +207,23 @@ export default function Travel() {
     );
   }
   // charts
- 
-
   if (chartsMode) {
     return (
-      <ScrollView><View>
+      <ScrollView>
+        <View style={styles.barChart}>
+          <Text style={styles.chartHeading}>Route Comparison</Text>
         
-        <BarChart data = {compareRoutes} barWidth={40} frontColor="#2ECC71" yAxisTextStyle={{color: '#333'}} xAxisLabelTextStyle={{color: '#333'}} spacing={30} />
-        <Pressable onPress={ () => {setChartsMode(false)}}><Text>Back</Text></Pressable>
+        <BarChart 
+          data={compareRoutes}
+          barWidth={40}
+          frontColor="#2ECC71"
+          yAxisTextStyle={{color: '#333'}}
+          xAxisLabelTextStyle={{color: '#333'}}
+          yAxisLabelWidth={60}
+          spacing={30}
+          maxValue={Math.max(...compareRoutes.map(r => r.value)) * 1.1} // set max number of chart to be 1.1 times larger
+        />
+        <Pressable style={styles.backButton} onPress={ () => {setChartsMode(false)}}><Text>Back</Text></Pressable>
       </View>
       </ScrollView>
     )
@@ -358,6 +369,27 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     marginTop: 10,
     alignItems: "center",
+  },
+  chartHeading: {
+    fontSize: 28,
+    fontWeight: "800",
+    color: "#111",
+    paddingBottom: 50,
+    textAlign: "center"
+  },
+  backButton: {
+    backgroundColor: "#2ECC71",
+    padding: 14,
+    borderRadius: 12,
+    marginTop: 10,
+    alignItems: "center",
+    marginTop: 50,
+    marginLeft:20
+  },
+  barChart: {
+    marginLeft: 5,
+    marginTop: 140,
+    marginRight: 30
   },
 
   statsRow: {

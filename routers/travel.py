@@ -28,7 +28,7 @@ def eco_route(
             "distance_m": round(r["distance_m"], 1),
             "duration_min": duration_min,
             "exposure": exposure, # raw exposure value, not for frontend
-            "front_AQI": round(exposure / duration_min / 60, 2), # exposure over diration seconds
+            "front_AQI": round(exposure / 1000, 2), # normalize exposure values
             "coords": r["coords"], 
             "instructions": r["instructions"]
         })
