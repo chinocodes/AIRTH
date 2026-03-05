@@ -28,14 +28,14 @@ def route_exposure(coords, sample_every=10):
         # calculate time to be used to get actual inhaled exposure 
         time_s = dist_m / WALKING_SPEED
 
-        # midpoint AQI
+        # midpoint particulate matter concentration
         mid_lat = (lat1 + lat2) / 2
         mid_lon = (lon1 + lon2) / 2
-        aqi = idw(mid_lat, mid_lon, stations)
+        pm25 = idw(mid_lat, mid_lon, stations)
 
         # scientifially accurate exposure calculation
         # calculates inhaled exposure by incorporating time spent in exposure
         # aqi as concentration of pollutant
-        total_exposure += aqi * time_s
+        total_exposure += pm25 * time_s
 
     return round(total_exposure, 2)

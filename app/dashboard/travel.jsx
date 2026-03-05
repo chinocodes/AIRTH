@@ -41,7 +41,7 @@ export default function Travel() {
     if (aqi <= 60) return "Moderate";
     if (aqi <= 100) return "Poor";
     if (aqi <= 150) return "Unhealthy";
-    return "Please stay indoors";
+    return "Use vehicle";
   };
   const incrementGoal = async () => { // send post request to update current_value in user_goals table
     try {
@@ -224,6 +224,7 @@ export default function Travel() {
           maxValue={Math.max(...compareRoutes.map(r => r.value)) * 1.1} // set max number of chart to be 1.1 times larger
         />
         <Pressable style={styles.backButton} onPress={ () => {setChartsMode(false)}}><Text>Back</Text></Pressable>
+        
       </View>
       </ScrollView>
     )
