@@ -8,9 +8,11 @@ WAQI_BOUNDS_URL = "https://api.waqi.info/map/bounds/"
 WAQI_TOKEN = os.getenv("WAQI_TOKEN")  
 
 def fetch_live_aqi(lat, lon, box_size=0.1):
+    
+    # fetches dozens of aqi stations found around the (lat, lon)
 
-    # fetches stations around the given coordinates
-
+    # creatr bounding box (lat/lon ± box_size)
+    # box_size=0.1 ≈ ~11km;
     lat1 = lat - box_size
     lat2 = lat + box_size
     lon1 = lon - box_size
@@ -32,22 +34,19 @@ def fetch_live_aqi(lat, lon, box_size=0.1):
         return []
 
     stations = []
-
     for item in res.get("data", []):
-
-        # ensure PM2.5 data exists
-        pm25 = None
-
+        if "aqi" not in item:
+            continue
         try:
-            pm25 = float(item["iaqi"]["pm25"]["v"])
+            aqi_value = int(item["aqi"])
         except:
-            continue  # skip stations without PM2.5
+            continue
 
         stations.append({
             "lat": item["lat"],
             "lon": item["lon"],
-            "pm25": pm25
+            "aqi": aqi_value
         })
 
-    print(f"[PM2.5] Loaded {len(stations)} stations from WAQI bounds.")
+    print(f"[AQI] Loaded {len(stations)} stations from WAQI bounds.")
     return stations
