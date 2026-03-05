@@ -7,7 +7,7 @@ load_dotenv()
 WAQI_BOUNDS_URL = "https://api.waqi.info/map/bounds/"
 WAQI_TOKEN = os.getenv("WAQI_TOKEN")  
 
-def fetch_live_pm25(lat, lon, box_size=0.1):
+def fetch_live_aqi(lat, lon, box_size=0.1):
 
     # fetches stations around the given coordinates
 
