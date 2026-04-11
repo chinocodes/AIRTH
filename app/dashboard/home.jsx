@@ -9,6 +9,7 @@ import {
   StyleSheet,
   Dimensions,
   Image,
+  Alert
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Location from "expo-location";
@@ -118,10 +119,18 @@ const deleteGoal = async () => {
         body: JSON.stringify({}) // send empty json body
       });
     await fetchGoal();
+    Alert.alert(
+      "Goal deleted",
+      "Your goal has been successfully deleted."
+    );
   } catch (err) {
-    console.log("error deleting goal", err)
+    console.log("error deleting goal", err);
+    Alert.alert(
+      "Error",
+      "Could not delete goal."
+    );
   }
-}
+};
 const resetGoal = async () => {
   try {
     const token = await AsyncStorage.getItem("token");
