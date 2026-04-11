@@ -121,6 +121,23 @@ const deleteGoal = async () => {
     console.log("error deleting goal", err)
   }
 }
+const resetGoal = async () => {
+  try {
+    const token = await AsyncStorage.getItem("token");
+
+    await fetch("https://web-production-ca09b.up.railway.app/api/goals/reset", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({}) // nothing since only 1 goal per person
+    });
+
+  } catch (err) {
+    console.log("error resetting goal", err);
+  }
+};
 
   // get user's location using expo location
   useEffect(() => {
@@ -273,7 +290,7 @@ const deleteGoal = async () => {
         </Pressable>
       </View>
       <View style={styles.reset}>
-        <Pressable style={styles.resetButton}>
+        <Pressable style={styles.resetButton} onPress={resetGoal}>
           <Text style={{ color: "white" }}>Reset</Text>
         </Pressable>
       </View>

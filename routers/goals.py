@@ -140,3 +140,30 @@ def delete_goal (current_user=Depends(get_current_user)) :
     finally:
         cur.close()
         conn.close()
+
+# reset goal enpoint
+@router.post("/api/goals/reset")
+def reset_goal(current_user=Depends(get_current_user)):
+    user_id = current_user
+    
+    conn = get_connection()
+    cur = conn.cursor()
+    
+    try:
+        cur.execute("""
+            UPDATE user_goals
+            SET current_value = 0
+            WHERE user_id = %s
+        """, (user_id,))
+        
+        conn.commit()
+        
+        return {"message": "Goal reset successfully"}
+    # exception handling
+    except Exception as e:
+        conn.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+    
+    finally:
+        cur.close()
+        conn.close()
