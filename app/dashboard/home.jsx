@@ -117,6 +117,7 @@ const deleteGoal = async () => {
         },
         body: JSON.stringify({}) // send empty json body
       });
+    await fetchGoal();
   } catch (err) {
     console.log("error deleting goal", err)
   }
