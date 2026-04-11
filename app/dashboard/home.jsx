@@ -25,7 +25,7 @@ export default function Home() {
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
   const [region, setRegion] = useState(null);
-  const [targetValue, setTargetValue] = useState(30);
+  const [targetValue, setTargetValue] = useState(0);
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [currentValue, setCurrentValue] = useState(0);
