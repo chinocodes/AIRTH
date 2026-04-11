@@ -131,8 +131,11 @@ const resetGoal = async () => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({}) // nothing since only 1 goal per person
+      body: JSON.stringify({})
     });
+
+    // refresh the data
+    await fetchGoal();
 
   } catch (err) {
     console.log("error resetting goal", err);
