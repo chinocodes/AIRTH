@@ -282,12 +282,14 @@ const resetGoal = async () => {
       {/* clean trips */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Clean Trips</Text>
+        
         <Pressable onPress={ () => {
           if (targetValue) { // view restricted to those with goal
           setAchievementVisible(true);
           }
         }}>
         <View style={styles.progressCard}>
+          <Text style={styles.subGreeting}>Click to see goal details</Text>
           <Text style={styles.progressText}>You've completed {currentValue} of {targetValue} 🌱</Text>
           <Text style={styles.progressText}>{goalComplete}</Text>
           <Progress.Bar

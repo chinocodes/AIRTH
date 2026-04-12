@@ -294,6 +294,7 @@ export default function Travel() {
                 <Pressable onPress={ () => {setChartsMode(true)}}>
                 <Text>{aqiNote(routeData.best_route.front_AQI)}</Text>
                 <Text style={styles.statLabel}>Route AQI</Text>
+                <Text style={styles.statLabel}>Compare</Text>
                 </Pressable>
               </View>
 
